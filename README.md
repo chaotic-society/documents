@@ -1,2 +1,2 @@
-# documents
-A repo for the documents related to the research and development of the organization's projects.
+# Theoretica Lab
+This repository stores the written documents produced during the research and development of the organization.
