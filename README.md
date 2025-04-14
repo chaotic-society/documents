@@ -9,3 +9,6 @@ The repo contains the following directories:
 
 - ### devops
   Documents about DevOps practices used within the project.
+
+  ### material
+  Material for presentations, conferences and such.
