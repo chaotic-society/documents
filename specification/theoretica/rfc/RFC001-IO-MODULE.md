@@ -24,6 +24,9 @@ io::write_csv("filename.csv", A);
 
 // Pass by reference, overwrite A with result
 io::read_csv("filename.csv", A);
+
+// Declare and load in a single line
+mat<real> B = io::read_csv<mat<real>>("filename.csv");
 ```
 
 This same structure should be followed for all major data structures of the library which could benefit from saving and loading to files, such as `vec<real>`, `polynomial<real>`, `histogram` and so on. Smaller data structures such as `complex` or `dual` may not be particularly suited for IO. The `io::read_csv` and `io::write_csv` functions should be implemented inside a `io/format_csv.h` header, for each data type. Dependencies between modules should be considered in this step, as supporting reading and writing of data structures requires depending on them and can potentially bloat the IO module. For instance, an intermediate representation of the class could be supplied by a dedicated `serialize()` method which shall return a string matrix or a type similar to `data_table` which represent uniquely the starting data. Adding an intermediate step could slow execution and increase memory footprint for large structures. For this reason, an intermediate representation could be evaluated for smaller data structures.
@@ -41,8 +44,7 @@ io::read_csv("filename.csv", table);
 table["newColumn"] = parallel::atan(table["oldColumn"]);
 
 // Load a table column into a 512 x 512 matrix
-mat<real> A;
-A.pack(table["myMatrix"], 512, 512);
+mat<real> A (table["myMatrix"], 512, 512);
 
 // Modify the matrix A ...
 
@@ -66,14 +68,14 @@ HDF5 support requires linking against the HDF5 library, which is an additional d
 An alternative to implementing a dedicated IO module would be to implement read and write functions for each data structure in their respective modules. However, this would lead to code duplication and a lack of consistency in the API. A dedicated IO module provides a centralized location for all file operations, making it easier to maintain and extend in the future.
 
 ## Unresolved
-Unresolved questions include future support for additional file formats such as JSON, XML, or binary formats. The design of the `data_table` structure also requires further discussion, particularly regarding its internal representation and performance optimizations.
+Unresolved questions include future support for additional file formats such as NetCDF, JSON, XML, or binary formats. The design of the `data_table` structure also requires further discussion, particularly regarding its internal representation and performance optimizations.
 
 ## Implementation Plan
-- [ ] Create `io` module and `io/io.h` with features from `utility.h`
-- [ ] Implement CSV support for `mat<real>` and `vec<real>` in `io/format_csv.h`
+- [x] Create `io` module and `io/io.h` with features from `utility.h`
+- [x] Implement CSV support for `mat<real>` and `vec<real>` in `io/format_csv.h`
 - [ ] Implement HDF5 support for `mat<real>` and `vec<real>` in `io/format_hdf5.h`
-- [ ] Implement base `data_table` structure in `io/data_table.h` and support CSV read/write
-- [ ] Add `pack()` and `unpack()` methods for `mat<real>` and `vec<real>` to support data tables
+- [x] Implement base `data_table` structure in `io/data_table.h` and support CSV read/write
+- [x] Add `pack()` and `unpack()` methods for `mat<real>` and `vec<real>` to support data tables (`pack()` implemented instead as a constructor)
 - [ ] Consider extensions of the `data_table` structure and additional file formats
 
 ## Testing Strategy
